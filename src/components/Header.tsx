@@ -1,10 +1,14 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Search } from 'lucide-react';
+import { Search, Wallet } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { useCredits } from '@/context/CreditsContext';
+import { Button } from '@/components/ui/button';
 
 const Header: React.FC = () => {
+  const { creditBalance } = useCredits();
+
   return (
     <header className="w-full py-4 px-6 glassmorphism sticky top-0 z-50 flex items-center justify-between">
       <div className="flex items-center">
@@ -28,6 +32,13 @@ const Header: React.FC = () => {
       </div>
       
       <nav className="flex items-center gap-6">
+        <Link 
+          to="/credits" 
+          className="flex items-center gap-2 px-3 py-1.5 bg-brand/10 rounded-full text-sm font-medium text-brand hover:bg-brand/20 transition-colors"
+        >
+          <Wallet className="h-4 w-4" />
+          <span>{creditBalance.toLocaleString()} créditos</span>
+        </Link>
         <Link 
           to="/" 
           className="text-sm font-medium text-gray-600 hover:text-brand transition-colors"

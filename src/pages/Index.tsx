@@ -6,21 +6,43 @@ import RecordingStatus from '@/components/RecordingStatus';
 import VideoPreview from '@/components/VideoPreview';
 import TutorialsList from '@/components/TutorialsList';
 import { useRecording } from '@/context/RecordingContext';
+import { useCredits } from '@/context/CreditsContext';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
   const { isRecording, recordedBlob } = useRecording();
+  const { creditBalance, spendCredits } = useCredits();
   const [showTitleDialog, setShowTitleDialog] = useState(false);
   const [tutorialTitle, setTutorialTitle] = useState('');
+  const [showInsufficientCreditsDialog, setShowInsufficientCreditsDialog] = useState(false);
+  const navigate = useNavigate();
+
+  const SAVE_TUTORIAL_COST = 500;
 
   const handleSaveTutorial = () => {
-    // In a real app, this would save the tutorial to your backend
-    // For now, we'll just close the dialog
-    setShowTitleDialog(false);
-    setTutorialTitle('');
+    if (spendCredits(SAVE_TUTORIAL_COST)) {
+      // In a real app, this would save the tutorial to your backend
+      toast.success(`Tutorial "${tutorialTitle}" salvo com sucesso!`);
+      toast.info(`${SAVE_TUTORIAL_COST} créditos foram utilizados`);
+      setShowTitleDialog(false);
+      setTutorialTitle('');
+    } else {
+      setShowTitleDialog(false);
+      setShowInsufficientCreditsDialog(true);
+    }
+  };
+
+  const handleTryToSave = () => {
+    if (creditBalance < SAVE_TUTORIAL_COST) {
+      setShowInsufficientCreditsDialog(true);
+    } else {
+      setShowTitleDialog(true);
+    }
   };
 
   return (
@@ -94,10 +116,10 @@ const Index = () => {
               
               <div className="mt-8 flex justify-center">
                 <Button 
-                  onClick={() => setShowTitleDialog(true)}
+                  onClick={handleTryToSave}
                   className="bg-brand hover:bg-brand-dark"
                 >
-                  Salvar tutorial
+                  Salvar tutorial ({SAVE_TUTORIAL_COST} créditos)
                 </Button>
               </div>
             </div>
@@ -129,6 +151,10 @@ const Index = () => {
                 placeholder="Ex: Como criar um workspace no Notion"
               />
             </div>
+            <div className="text-sm text-gray-500 flex items-center justify-between">
+              <span>Custo:</span>
+              <span className="font-medium">{SAVE_TUTORIAL_COST} créditos</span>
+            </div>
           </div>
           <div className="flex justify-end gap-3">
             <Button 
@@ -143,6 +169,46 @@ const Index = () => {
               disabled={!tutorialTitle}
             >
               Salvar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showInsufficientCreditsDialog} onOpenChange={setShowInsufficientCreditsDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Créditos insuficientes</DialogTitle>
+            <DialogDescription>
+              Você não tem créditos suficientes para salvar este tutorial.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="p-4 bg-brand/5 rounded-md flex justify-between items-center">
+              <div>
+                <p className="text-sm font-medium">Saldo atual</p>
+                <p className="text-xl font-bold">{creditBalance} créditos</p>
+              </div>
+              <div>
+                <p className="text-sm font-medium">Necessário</p>
+                <p className="text-xl font-bold">{SAVE_TUTORIAL_COST} créditos</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-3">
+            <Button 
+              onClick={() => {
+                setShowInsufficientCreditsDialog(false);
+                navigate('/credits');
+              }}
+              className="bg-brand hover:bg-brand-dark"
+            >
+              Adicionar créditos
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => setShowInsufficientCreditsDialog(false)}
+            >
+              Cancelar
             </Button>
           </div>
         </DialogContent>

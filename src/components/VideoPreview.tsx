@@ -1,15 +1,23 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import { useRecording } from '@/context/RecordingContext';
+import { useCredits } from '@/context/CreditsContext';
 import { Button } from '@/components/ui/button';
 import { Share2, Download, Trash2, FileText } from 'lucide-react';
 import { toast } from 'sonner';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { useNavigate } from 'react-router-dom';
 
 const VideoPreview: React.FC = () => {
   const { recordedBlob, resetRecording } = useRecording();
+  const { creditBalance, spendCredits } = useCredits();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isGeneratingArticle, setIsGeneratingArticle] = useState(false);
   const [articleText, setArticleText] = useState<string | null>(null);
+  const [showInsufficientCreditsDialog, setShowInsufficientCreditsDialog] = useState(false);
+  const navigate = useNavigate();
+
+  const GENERATE_ARTICLE_COST = 1000;
 
   useEffect(() => {
     if (recordedBlob && videoRef.current) {
@@ -59,9 +67,15 @@ const VideoPreview: React.FC = () => {
   const handleCreateArticle = async () => {
     if (!recordedBlob) return;
 
+    if (!spendCredits(GENERATE_ARTICLE_COST)) {
+      setShowInsufficientCreditsDialog(true);
+      return;
+    }
+
     try {
       setIsGeneratingArticle(true);
       toast.info('Iniciando transcrição do vídeo...');
+      toast.info(`${GENERATE_ARTICLE_COST} créditos foram utilizados`);
 
       // First, get the audio from the video blob
       const audioContext = new AudioContext();
@@ -152,7 +166,11 @@ const VideoPreview: React.FC = () => {
               className="flex items-center gap-2"
             >
               <FileText className="h-4 w-4" />
-              <span>{isGeneratingArticle ? 'Criando artigo...' : 'Criar artigo'}</span>
+              <span>
+                {isGeneratingArticle 
+                  ? 'Criando artigo...' 
+                  : `Criar artigo (${GENERATE_ARTICLE_COST} créditos)`}
+              </span>
             </Button>
             
             <Button
@@ -175,6 +193,46 @@ const VideoPreview: React.FC = () => {
           </div>
         )}
       </div>
+
+      <Dialog open={showInsufficientCreditsDialog} onOpenChange={setShowInsufficientCreditsDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Créditos insuficientes</DialogTitle>
+            <DialogDescription>
+              Você não tem créditos suficientes para gerar um artigo.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="p-4 bg-brand/5 rounded-md flex justify-between items-center">
+              <div>
+                <p className="text-sm font-medium">Saldo atual</p>
+                <p className="text-xl font-bold">{creditBalance} créditos</p>
+              </div>
+              <div>
+                <p className="text-sm font-medium">Necessário</p>
+                <p className="text-xl font-bold">{GENERATE_ARTICLE_COST} créditos</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-3">
+            <Button 
+              onClick={() => {
+                setShowInsufficientCreditsDialog(false);
+                navigate('/credits');
+              }}
+              className="bg-brand hover:bg-brand-dark"
+            >
+              Adicionar créditos
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => setShowInsufficientCreditsDialog(false)}
+            >
+              Cancelar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
