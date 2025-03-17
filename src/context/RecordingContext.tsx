@@ -57,11 +57,9 @@ export const RecordingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   
   const startRecording = async (): Promise<void> => {
     try {
+      // Use the proper TypeScript types for getDisplayMedia
       const screenStream = await navigator.mediaDevices.getDisplayMedia({
-        video: {
-          cursor: 'always',
-          displaySurface: 'monitor',
-        },
+        video: true,
         audio: true,
       });
       
