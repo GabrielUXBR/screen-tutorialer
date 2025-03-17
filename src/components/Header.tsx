@@ -25,7 +25,7 @@ const Header: React.FC = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
           <Input 
             type="text" 
-            placeholder="Procurar gravações" 
+            placeholder="Search recordings" 
             className="pl-10 h-10 rounded-full border-gray-200 focus:border-brand focus:ring-brand/20" 
           />
         </div>
@@ -37,25 +37,25 @@ const Header: React.FC = () => {
           className="flex items-center gap-2 px-3 py-1.5 bg-brand/10 rounded-full text-sm font-medium text-brand hover:bg-brand/20 transition-colors"
         >
           <Wallet className="h-4 w-4" />
-          <span>{creditBalance.toLocaleString()} créditos</span>
+          <span>{creditBalance.toLocaleString()} credits</span>
         </Link>
         <Link 
           to="/" 
           className="text-sm font-medium text-gray-600 hover:text-brand transition-colors"
         >
-          Meus guias
+          My guides
         </Link>
         <Link 
           to="/settings" 
           className="text-sm font-medium text-gray-600 hover:text-brand transition-colors"
         >
-          Configurações
+          Settings
         </Link>
         <Link 
           to="/profile" 
           className="text-sm font-medium text-gray-600 hover:text-brand transition-colors"
         >
-          Perfil
+          Profile
         </Link>
       </nav>
     </header>

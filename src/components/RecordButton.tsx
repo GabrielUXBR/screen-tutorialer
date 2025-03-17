@@ -27,10 +27,10 @@ const RecordButton: React.FC = () => {
       setIsLoading(true);
       try {
         await startRecording();
-        toast.success('Gravação iniciada');
+        toast.success('Recording started');
       } catch (error) {
         console.error('Error starting recording:', error);
-        toast.error('Falha ao iniciar gravação. Verifique as permissões.');
+        toast.error('Failed to start recording. Please check permissions.');
       } finally {
         setIsLoading(false);
       }
@@ -39,7 +39,7 @@ const RecordButton: React.FC = () => {
 
   const handleStopClick = () => {
     stopRecording();
-    toast.success('Gravação finalizada');
+    toast.success('Recording completed');
   };
 
   if (isLoading) {
@@ -51,7 +51,7 @@ const RecordButton: React.FC = () => {
         >
           <Loader2 className="h-8 w-8 text-gray-500 animate-spin" />
         </Button>
-        <span className="text-sm text-gray-500">Solicitando permissões...</span>
+        <span className="text-sm text-gray-500">Requesting permissions...</span>
       </div>
     );
   }
@@ -67,7 +67,7 @@ const RecordButton: React.FC = () => {
                 ? 'bg-green-500 hover:bg-green-600' 
                 : 'bg-amber-500 hover:bg-amber-600'
             } transition-all duration-300 active:scale-95`}
-            aria-label={isPaused ? 'Continuar gravação' : 'Pausar gravação'}
+            aria-label={isPaused ? 'Resume recording' : 'Pause recording'}
           >
             {isPaused ? (
               <Play className="h-8 w-8 text-white" />
@@ -76,7 +76,7 @@ const RecordButton: React.FC = () => {
             )}
           </Button>
           <span className="text-sm font-medium">
-            {isPaused ? 'Continuar' : 'Pausar'}
+            {isPaused ? 'Resume' : 'Pause'}
           </span>
         </div>
         
@@ -84,11 +84,11 @@ const RecordButton: React.FC = () => {
           <Button 
             onClick={handleStopClick}
             className="h-16 w-16 rounded-full flex items-center justify-center shadow-md bg-brand hover:bg-brand-dark transition-all duration-300 active:scale-95"
-            aria-label="Parar gravação"
+            aria-label="Stop recording"
           >
             <Square className="h-8 w-8 text-white" fill="white" />
           </Button>
-          <span className="text-sm font-medium">Parar</span>
+          <span className="text-sm font-medium">Stop</span>
         </div>
       </div>
     );
@@ -99,14 +99,14 @@ const RecordButton: React.FC = () => {
       <Button 
         onClick={handleRecordClick}
         className="h-16 w-16 rounded-full flex items-center justify-center shadow-md bg-brand hover:bg-brand-dark transition-all duration-300 active:scale-95"
-        aria-label="Iniciar gravação"
+        aria-label="Start recording"
       >
         <div className="relative">
           <Video className="h-8 w-8 text-white absolute -left-5 opacity-80" />
           <Mic className="h-8 w-8 text-white absolute -right-5 opacity-80" />
         </div>
       </Button>
-      <span className="text-sm font-medium">Iniciar gravação</span>
+      <span className="text-sm font-medium">Start recording</span>
     </div>
   );
 };

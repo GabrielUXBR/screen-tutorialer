@@ -7,21 +7,21 @@ import { Play, Clock } from 'lucide-react';
 const mockTutorials = [
   {
     id: '1',
-    title: 'Como criar workspace no Notion',
+    title: 'How to create a workspace in Notion',
     duration: '10:23',
     date: '2023-05-15',
     thumbnail: '/lovable-uploads/abd9b1c6-68af-4383-a3e7-fec5c6c66d1e.png',
   },
   {
     id: '2',
-    title: 'Como remover clientes da lista',
+    title: 'How to remove clients from the list',
     duration: '05:47',
     date: '2023-05-12',
     thumbnail: null,
   },
   {
     id: '3',
-    title: 'Criação de produtos',
+    title: 'Creating products',
     duration: '08:19',
     date: '2023-05-10',
     thumbnail: null,
@@ -31,7 +31,7 @@ const mockTutorials = [
 const TutorialsList: React.FC = () => {
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold">Meus guias</h2>
+      <h2 className="text-xl font-semibold">My guides</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {mockTutorials.map(tutorial => (

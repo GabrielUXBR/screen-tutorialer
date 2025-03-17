@@ -32,16 +32,16 @@ const VideoPreview: React.FC = () => {
 
   const handleShare = () => {
     if (navigator.share && recordedBlob) {
-      const file = new File([recordedBlob], 'gravacao.webm', { type: recordedBlob.type });
+      const file = new File([recordedBlob], 'recording.webm', { type: recordedBlob.type });
       navigator.share({
-        title: 'Minha Gravação',
+        title: 'My Recording',
         files: [file]
       }).catch(error => {
         console.error('Error sharing:', error);
-        toast.error('Não foi possível compartilhar o vídeo');
+        toast.error('Unable to share the video');
       });
     } else {
-      toast.info('Compartilhamento não disponível no seu navegador');
+      toast.info('Sharing not available in your browser');
     }
   };
 
@@ -55,13 +55,13 @@ const VideoPreview: React.FC = () => {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      toast.success('Vídeo salvo com sucesso');
+      toast.success('Video saved successfully');
     }
   };
 
   const handleDiscard = () => {
     resetRecording();
-    toast.info('Gravação descartada');
+    toast.info('Recording discarded');
   };
 
   const handleCreateArticle = async () => {
@@ -74,8 +74,8 @@ const VideoPreview: React.FC = () => {
 
     try {
       setIsGeneratingArticle(true);
-      toast.info('Iniciando transcrição do vídeo...');
-      toast.info(`${GENERATE_ARTICLE_COST} créditos foram utilizados`);
+      toast.info('Starting video transcription...');
+      toast.info(`${GENERATE_ARTICLE_COST} credits were used`);
 
       // First, get the audio from the video blob
       const audioContext = new AudioContext();
@@ -85,15 +85,15 @@ const VideoPreview: React.FC = () => {
       const transcript = await transcribeAudio(audioSource);
       
       // Now send the transcript to OpenAI for article generation
-      toast.info('Criando artigo baseado na transcrição...');
+      toast.info('Creating article based on transcription...');
       const article = await generateArticleFromTranscript(transcript);
       
       // Set the generated article text
       setArticleText(article);
-      toast.success('Artigo criado com sucesso!');
+      toast.success('Article created successfully!');
     } catch (error) {
       console.error('Error creating article:', error);
-      toast.error('Não foi possível criar o artigo');
+      toast.error('Unable to create the article');
     } finally {
       setIsGeneratingArticle(false);
     }
@@ -135,7 +135,7 @@ const VideoPreview: React.FC = () => {
         />
         
         <div className="p-4 flex flex-wrap items-center justify-between gap-4">
-          <h3 className="text-lg font-medium">Gravação concluída</h3>
+          <h3 className="text-lg font-medium">Recording completed</h3>
           
           <div className="flex items-center flex-wrap gap-3">
             <Button
@@ -145,7 +145,7 @@ const VideoPreview: React.FC = () => {
               className="flex items-center gap-2"
             >
               <Trash2 className="h-4 w-4" />
-              <span>Descartar</span>
+              <span>Discard</span>
             </Button>
             
             <Button
@@ -155,7 +155,7 @@ const VideoPreview: React.FC = () => {
               className="flex items-center gap-2"
             >
               <Share2 className="h-4 w-4" />
-              <span>Compartilhar</span>
+              <span>Share</span>
             </Button>
             
             <Button
@@ -168,8 +168,8 @@ const VideoPreview: React.FC = () => {
               <FileText className="h-4 w-4" />
               <span>
                 {isGeneratingArticle 
-                  ? 'Criando artigo...' 
-                  : `Criar artigo (${GENERATE_ARTICLE_COST} créditos)`}
+                  ? 'Creating article...' 
+                  : `Create article (${GENERATE_ARTICLE_COST} credits)`}
               </span>
             </Button>
             
@@ -186,7 +186,7 @@ const VideoPreview: React.FC = () => {
         
         {articleText && (
           <div className="p-4 mt-2 border-t border-gray-100">
-            <h4 className="text-lg font-medium mb-2">Artigo Gerado</h4>
+            <h4 className="text-lg font-medium mb-2">Generated Article</h4>
             <div className="bg-gray-50 p-4 rounded-md whitespace-pre-line">
               {articleText}
             </div>
@@ -197,20 +197,20 @@ const VideoPreview: React.FC = () => {
       <Dialog open={showInsufficientCreditsDialog} onOpenChange={setShowInsufficientCreditsDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Créditos insuficientes</DialogTitle>
+            <DialogTitle>Insufficient credits</DialogTitle>
             <DialogDescription>
-              Você não tem créditos suficientes para gerar um artigo.
+              You don't have enough credits to generate an article.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="p-4 bg-brand/5 rounded-md flex justify-between items-center">
               <div>
-                <p className="text-sm font-medium">Saldo atual</p>
-                <p className="text-xl font-bold">{creditBalance} créditos</p>
+                <p className="text-sm font-medium">Current balance</p>
+                <p className="text-xl font-bold">{creditBalance} credits</p>
               </div>
               <div>
-                <p className="text-sm font-medium">Necessário</p>
-                <p className="text-xl font-bold">{GENERATE_ARTICLE_COST} créditos</p>
+                <p className="text-sm font-medium">Required</p>
+                <p className="text-xl font-bold">{GENERATE_ARTICLE_COST} credits</p>
               </div>
             </div>
           </div>
@@ -222,13 +222,13 @@ const VideoPreview: React.FC = () => {
               }}
               className="bg-brand hover:bg-brand-dark"
             >
-              Adicionar créditos
+              Add credits
             </Button>
             <Button 
               variant="outline" 
               onClick={() => setShowInsufficientCreditsDialog(false)}
             >
-              Cancelar
+              Cancel
             </Button>
           </div>
         </DialogContent>

@@ -31,7 +31,7 @@ const RecordingStatus: React.FC = () => {
                 </div>
               )}
               <span className="font-medium">
-                {isPaused ? 'Gravação pausada' : 'Gravando...'}
+                {isPaused ? 'Recording paused' : 'Recording...'}
               </span>
             </div>
             <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
@@ -42,26 +42,26 @@ const RecordingStatus: React.FC = () => {
           <div className="grid grid-cols-4 gap-2 text-xs">
             <div className="col-span-1 flex flex-col items-center p-2 rounded bg-white/80">
               <CheckCircle className="h-4 w-4 text-green-500 mb-1" />
-              <span>Vídeo</span>
+              <span>Video</span>
             </div>
             <div className="col-span-1 flex flex-col items-center p-2 rounded bg-white/80">
               <CheckCircle className="h-4 w-4 text-green-500 mb-1" />
-              <span>Áudio</span>
+              <span>Audio</span>
             </div>
             <div className="col-span-1 flex flex-col items-center p-2 rounded bg-white/80">
               <CheckCircle className="h-4 w-4 text-green-500 mb-1" />
-              <span>Sistema</span>
+              <span>System</span>
             </div>
             <div className="col-span-1 flex flex-col items-center p-2 rounded bg-white/80">
               {isPaused ? (
                 <>
                   <AlertCircle className="h-4 w-4 text-amber-500 mb-1" />
-                  <span>Pausado</span>
+                  <span>Paused</span>
                 </>
               ) : (
                 <>
                   <CheckCircle className="h-4 w-4 text-green-500 mb-1" />
-                  <span>Ativo</span>
+                  <span>Active</span>
                 </>
               )}
             </div>

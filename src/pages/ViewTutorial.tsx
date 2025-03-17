@@ -9,33 +9,33 @@ import { ChevronLeft, Share2, Download, Edit } from 'lucide-react';
 const mockTutorials = {
   '1': {
     id: '1',
-    title: 'Como criar workspace no Notion',
-    description: 'Nesta aula vamos aprender sobre a criação de workspace no Notion!',
+    title: 'How to create a workspace in Notion',
+    description: 'In this tutorial we will learn about creating workspaces in Notion!',
     duration: '10:23',
     date: '2023-05-15',
     videoUrl: '/path-to-video.mp4', // In a real app, this would be a valid URL
     thumbnail: '/lovable-uploads/abd9b1c6-68af-4383-a3e7-fec5c6c66d1e.png',
     steps: [
-      { time: '00:12', title: 'Enviando Video', completed: true },
-      { time: '01:45', title: 'Enviado áudio', completed: true },
-      { time: '03:28', title: 'Transcrição', completed: true },
-      { time: '05:10', title: 'Criando artigo IA', completed: true },
-      { time: '08:34', title: 'Narrando seu vídeo', completed: true },
+      { time: '00:12', title: 'Uploading Video', completed: true },
+      { time: '01:45', title: 'Uploading audio', completed: true },
+      { time: '03:28', title: 'Transcription', completed: true },
+      { time: '05:10', title: 'Creating AI article', completed: true },
+      { time: '08:34', title: 'Narrating your video', completed: true },
     ]
   },
   '2': {
     id: '2',
-    title: 'Como remover clientes da lista',
-    description: 'Aprenda a gerenciar sua lista de clientes removendo clientes indesejados.',
+    title: 'How to remove clients from the list',
+    description: 'Learn how to manage your client list by removing unwanted clients.',
     duration: '05:47',
     date: '2023-05-12',
     videoUrl: '/path-to-video.mp4',
     thumbnail: null,
     steps: [
-      { time: '00:30', title: 'Acessando painel de clientes', completed: true },
-      { time: '01:15', title: 'Filtrando clientes', completed: true },
-      { time: '02:45', title: 'Removendo cliente', completed: true },
-      { time: '04:20', title: 'Confirmando ação', completed: true },
+      { time: '00:30', title: 'Accessing client panel', completed: true },
+      { time: '01:15', title: 'Filtering clients', completed: true },
+      { time: '02:45', title: 'Removing client', completed: true },
+      { time: '04:20', title: 'Confirming action', completed: true },
     ]
   },
 };
@@ -50,9 +50,9 @@ const ViewTutorial: React.FC = () => {
         <Header />
         <div className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">Tutorial não encontrado</h1>
+            <h1 className="text-2xl font-bold mb-4">Tutorial not found</h1>
             <Link to="/">
-              <Button>Voltar para início</Button>
+              <Button>Back to home</Button>
             </Link>
           </div>
         </div>
@@ -72,7 +72,7 @@ const ViewTutorial: React.FC = () => {
               className="inline-flex items-center text-gray-600 hover:text-brand transition-colors"
             >
               <ChevronLeft className="h-4 w-4 mr-1" />
-              <span>Voltar aos tutoriais</span>
+              <span>Back to tutorials</span>
             </Link>
           </div>
           
@@ -96,7 +96,7 @@ const ViewTutorial: React.FC = () => {
                 className="flex items-center gap-2"
               >
                 <Edit className="h-4 w-4" />
-                <span>Editar</span>
+                <span>Edit</span>
               </Button>
               
               <Button
@@ -105,7 +105,7 @@ const ViewTutorial: React.FC = () => {
                 className="flex items-center gap-2"
               >
                 <Share2 className="h-4 w-4" />
-                <span>Compartilhar</span>
+                <span>Share</span>
               </Button>
               
               <Button
@@ -145,7 +145,7 @@ const ViewTutorial: React.FC = () => {
                 
                 <div className="p-4">
                   <div className="space-y-4">
-                    <h3 className="font-medium text-gray-900">Descrição</h3>
+                    <h3 className="font-medium text-gray-900">Description</h3>
                     <p className="text-gray-600 text-sm">{tutorial.description}</p>
                   </div>
                 </div>
@@ -155,7 +155,7 @@ const ViewTutorial: React.FC = () => {
             <div className="lg:col-span-1">
               <div className="rounded-xl overflow-hidden shadow-md bg-white border border-gray-100 sticky top-24">
                 <div className="p-4 border-b border-gray-100">
-                  <h3 className="font-medium text-gray-900">Etapas do tutorial</h3>
+                  <h3 className="font-medium text-gray-900">Tutorial steps</h3>
                 </div>
                 
                 <div className="p-4">

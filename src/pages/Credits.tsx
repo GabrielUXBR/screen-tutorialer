@@ -14,7 +14,7 @@ const Credits = () => {
   const handleAddCredits = (amount: number) => {
     // In a real app, this would open a payment modal or redirect to a payment page
     addCredits(amount);
-    toast.success(`${amount.toLocaleString()} créditos adicionados com sucesso!`);
+    toast.success(`${amount.toLocaleString()} credits added successfully!`);
   };
 
   return (
@@ -23,16 +23,16 @@ const Credits = () => {
       
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto">
-          <h1 className="text-3xl font-bold mb-8">Seus Créditos</h1>
+          <h1 className="text-3xl font-bold mb-8">Your Credits</h1>
           
           <Card className="mb-8">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Coins className="text-brand h-5 w-5" />
-                Saldo de Créditos
+                Credit Balance
               </CardTitle>
               <CardDescription>
-                Seus créditos são usados quando você salva gravações e gera artigos
+                Your credits are used when you save recordings and generate articles
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -42,7 +42,7 @@ const Credits = () => {
                   <span className="text-2xl font-bold">{creditBalance.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Restantes</span>
+                  <span className="text-gray-600">Remaining</span>
                   <span className="text-2xl font-bold">{creditBalance.toLocaleString()}</span>
                 </div>
               </div>
@@ -52,22 +52,22 @@ const Credits = () => {
                 className="w-full bg-brand hover:bg-brand-dark" 
                 onClick={() => handleAddCredits(5000)}
               >
-                <Plus className="mr-2 h-4 w-4" /> Adicionar mais créditos
+                <Plus className="mr-2 h-4 w-4" /> Add more credits
               </Button>
             </CardFooter>
           </Card>
           
-          <h2 className="text-xl font-semibold mb-4">Pacotes de Créditos</h2>
+          <h2 className="text-xl font-semibold mb-4">Credit Packages</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <Card>
               <CardHeader>
-                <CardTitle>Básico</CardTitle>
-                <CardDescription>Para quem está começando</CardDescription>
+                <CardTitle>Basic</CardTitle>
+                <CardDescription>For beginners</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-3xl font-bold mb-4">5.000</p>
-                <p className="text-sm text-gray-500">Créditos suficientes para aproximadamente 10 tutoriais</p>
+                <p className="text-3xl font-bold mb-4">5,000</p>
+                <p className="text-sm text-gray-500">Credits for approximately 10 tutorials</p>
               </CardContent>
               <CardFooter>
                 <Button 
@@ -75,7 +75,7 @@ const Credits = () => {
                   variant="outline"
                   onClick={() => handleAddCredits(5000)}
                 >
-                  <CreditCard className="mr-2 h-4 w-4" /> Comprar por R$25
+                  <CreditCard className="mr-2 h-4 w-4" /> Buy for $25
                 </Button>
               </CardFooter>
             </Card>
@@ -83,18 +83,18 @@ const Credits = () => {
             <Card className="border-brand">
               <CardHeader className="bg-brand/5">
                 <CardTitle>Premium</CardTitle>
-                <CardDescription>Nosso pacote mais popular</CardDescription>
+                <CardDescription>Our most popular package</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-3xl font-bold mb-4">15.000</p>
-                <p className="text-sm text-gray-500">Créditos suficientes para aproximadamente 30 tutoriais</p>
+                <p className="text-3xl font-bold mb-4">15,000</p>
+                <p className="text-sm text-gray-500">Credits for approximately 30 tutorials</p>
               </CardContent>
               <CardFooter>
                 <Button 
                   className="w-full bg-brand hover:bg-brand-dark" 
                   onClick={() => handleAddCredits(15000)}
                 >
-                  <CreditCard className="mr-2 h-4 w-4" /> Comprar por R$60
+                  <CreditCard className="mr-2 h-4 w-4" /> Buy for $60
                 </Button>
               </CardFooter>
             </Card>
@@ -102,11 +102,11 @@ const Credits = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Pro</CardTitle>
-                <CardDescription>Para uso intensivo</CardDescription>
+                <CardDescription>For intensive use</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-3xl font-bold mb-4">50.000</p>
-                <p className="text-sm text-gray-500">Créditos suficientes para aproximadamente 100 tutoriais</p>
+                <p className="text-3xl font-bold mb-4">50,000</p>
+                <p className="text-sm text-gray-500">Credits for approximately 100 tutorials</p>
               </CardContent>
               <CardFooter>
                 <Button 
@@ -114,29 +114,29 @@ const Credits = () => {
                   variant="outline"
                   onClick={() => handleAddCredits(50000)}
                 >
-                  <CreditCard className="mr-2 h-4 w-4" /> Comprar por R$150
+                  <CreditCard className="mr-2 h-4 w-4" /> Buy for $150
                 </Button>
               </CardFooter>
             </Card>
           </div>
           
-          <h2 className="text-xl font-semibold mb-4">Como os créditos são usados</h2>
+          <h2 className="text-xl font-semibold mb-4">How credits are used</h2>
           <Card>
             <CardContent className="pt-6">
               <ul className="space-y-4">
                 <li className="flex justify-between">
-                  <span>Salvar uma gravação</span>
-                  <span className="font-semibold">500 créditos</span>
+                  <span>Save a recording</span>
+                  <span className="font-semibold">500 credits</span>
                 </li>
                 <Separator />
                 <li className="flex justify-between">
-                  <span>Gerar um artigo a partir da gravação</span>
-                  <span className="font-semibold">1.000 créditos</span>
+                  <span>Generate an article from recording</span>
+                  <span className="font-semibold">1,000 credits</span>
                 </li>
                 <Separator />
                 <li className="flex justify-between">
-                  <span>Compartilhar tutorial</span>
-                  <span className="font-semibold">Grátis</span>
+                  <span>Share tutorial</span>
+                  <span className="font-semibold">Free</span>
                 </li>
               </ul>
             </CardContent>
