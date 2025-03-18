@@ -15,7 +15,7 @@ import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
-  const { isRecording, recordedBlob } = useRecording();
+  const { isRecording, recordedBlob, addTutorial, resetRecording } = useRecording();
   const { creditBalance, spendCredits } = useCredits();
   const [showTitleDialog, setShowTitleDialog] = useState(false);
   const [tutorialTitle, setTutorialTitle] = useState('');
@@ -26,11 +26,16 @@ const Index = () => {
 
   const handleSaveTutorial = () => {
     if (spendCredits(SAVE_TUTORIAL_COST)) {
-      // In a real app, this would save the tutorial to your backend
+      // Add the tutorial to our list
+      if (recordedBlob) {
+        addTutorial(tutorialTitle, recordedBlob);
+      }
+      
       toast.success(`Tutorial "${tutorialTitle}" saved successfully!`);
       toast.info(`${SAVE_TUTORIAL_COST} credits have been used`);
       setShowTitleDialog(false);
       setTutorialTitle('');
+      resetRecording(); // Clear the recording after saving
     } else {
       setShowTitleDialog(false);
       setShowInsufficientCreditsDialog(true);

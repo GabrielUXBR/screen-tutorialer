@@ -2,39 +2,28 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Play, Clock } from 'lucide-react';
-
-// This would typically come from your data source
-const mockTutorials = [
-  {
-    id: '1',
-    title: 'How to create a workspace in Notion',
-    duration: '10:23',
-    date: '2023-05-15',
-    thumbnail: '/lovable-uploads/abd9b1c6-68af-4383-a3e7-fec5c6c66d1e.png',
-  },
-  {
-    id: '2',
-    title: 'How to remove clients from the list',
-    duration: '05:47',
-    date: '2023-05-12',
-    thumbnail: null,
-  },
-  {
-    id: '3',
-    title: 'Creating products',
-    duration: '08:19',
-    date: '2023-05-10',
-    thumbnail: null,
-  }
-];
+import { useRecording } from '@/context/RecordingContext';
 
 const TutorialsList: React.FC = () => {
+  const { tutorials } = useRecording();
+  
+  if (tutorials.length === 0) {
+    return (
+      <div className="space-y-6">
+        <h2 className="text-xl font-semibold">My guides</h2>
+        <div className="text-center py-12 bg-gray-50 rounded-lg">
+          <p className="text-gray-500">You haven't created any guides yet</p>
+        </div>
+      </div>
+    );
+  }
+  
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold">My guides</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {mockTutorials.map(tutorial => (
+        {tutorials.map(tutorial => (
           <Link 
             key={tutorial.id}
             to={`/tutorial/${tutorial.id}`}
