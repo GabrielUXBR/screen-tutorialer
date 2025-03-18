@@ -1,9 +1,9 @@
-
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import RecordButton from '@/components/RecordButton';
 import RecordingStatus from '@/components/RecordingStatus';
 import VideoPreview from '@/components/VideoPreview';
+import WebcamPreview from '@/components/WebcamPreview';
 import TutorialsList from '@/components/TutorialsList';
 import { useRecording } from '@/context/RecordingContext';
 import { useCredits } from '@/context/CreditsContext';
@@ -137,6 +137,8 @@ const Index = () => {
           )}
         </div>
       </main>
+      
+      <WebcamPreview />
       
       <Dialog open={showTitleDialog} onOpenChange={setShowTitleDialog}>
         <DialogContent className="sm:max-w-md">
