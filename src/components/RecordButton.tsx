@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Mic, Video, Play, Square, Loader2, Camera } from 'lucide-react';
+import { Mic, Play, Square, Loader2, Monitor } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useRecording } from '@/context/RecordingContext';
 import { toast } from 'sonner';
@@ -27,10 +27,10 @@ const RecordButton: React.FC = () => {
       setIsLoading(true);
       try {
         await startRecording();
-        toast.success('Recording started with webcam');
+        toast.success('Recording started');
       } catch (error) {
         console.error('Error starting recording:', error);
-        toast.error('Failed to start recording. Please check camera and screen share permissions.');
+        toast.error('Failed to start recording. Please check screen share permissions.');
       } finally {
         setIsLoading(false);
       }
@@ -101,12 +101,11 @@ const RecordButton: React.FC = () => {
         className="h-16 w-16 rounded-full flex items-center justify-center shadow-md bg-brand hover:bg-brand-dark transition-all duration-300 active:scale-95"
         aria-label="Start recording"
       >
-        <div className="relative">
-          <Video className="h-8 w-8 text-white absolute -left-5 opacity-80" />
-          <Camera className="h-8 w-8 text-white absolute -right-5 opacity-80" />
+        <div className="flex items-center justify-center">
+          <Monitor className="h-8 w-8 text-white" />
         </div>
       </Button>
-      <span className="text-sm font-medium">Start recording with webcam</span>
+      <span className="text-sm font-medium">Start screen recording</span>
     </div>
   );
 };
