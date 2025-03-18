@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 
 // Define a Tutorial type for our app
@@ -107,6 +108,7 @@ export const RecordingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       date: new Date().toISOString().split('T')[0],
       duration: formatDuration(recordingDuration),
       thumbnail: null,
+      videoBlob: blob
     };
     
     setTutorials(prev => [newTutorial, ...prev]);
@@ -182,6 +184,7 @@ export const RecordingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       
       canvasStreamRef.current = canvas.captureStream(30);
       
+      // Add audio tracks from both streams to the canvas stream
       screenStream.getAudioTracks().forEach(track => {
         canvasStreamRef.current?.addTrack(track);
       });
@@ -238,8 +241,11 @@ export const RecordingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         setRecordedBlob(blob);
         setIsRecording(false);
         
-        streamRef.current?.getTracks().forEach(track => track.stop());
-        streamRef.current = null;
+        // Stop all tracks and clean up
+        if (streamRef.current) {
+          streamRef.current.getTracks().forEach(track => track.stop());
+          streamRef.current = null;
+        }
         
         if (webcamStream) {
           webcamStream.getTracks().forEach(track => track.stop());
@@ -263,7 +269,9 @@ export const RecordingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       startTimer();
       
       screenStream.getVideoTracks()[0].onended = () => {
-        stopRecording();
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+          stopRecording();
+        }
       };
       
     } catch (error) {
