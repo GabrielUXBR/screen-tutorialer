@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 
 // Define a Tutorial type for our app
@@ -108,8 +107,6 @@ export const RecordingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       date: new Date().toISOString().split('T')[0],
       duration: formatDuration(recordingDuration),
       thumbnail: null,
-      // We don't store the videoBlob in localStorage, but it could be referenced here
-      // for a real app that stores videos in a backend service
     };
     
     setTutorials(prev => [newTutorial, ...prev]);
@@ -130,14 +127,11 @@ export const RecordingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }, 100);
   };
 
-  // Function to create a composite canvas with screen capture and webcam
   const setupCompositeCanvas = (screenStream: MediaStream, webcamStream: MediaStream) => {
-    // Create canvas element if it doesn't exist
     if (!canvasRef.current) {
       canvasRef.current = document.createElement('canvas');
       const canvas = canvasRef.current;
       
-      // Set canvas size to match the screen capture resolution
       const videoTrack = screenStream.getVideoTracks()[0];
       const settings = videoTrack.getSettings();
       canvas.width = settings.width || 1920;
@@ -146,7 +140,6 @@ export const RecordingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       const ctx = canvas.getContext('2d');
       if (!ctx) return null;
       
-      // Create video elements for screen and webcam
       const screenVideo = document.createElement('video');
       screenVideo.srcObject = screenStream;
       screenVideo.play();
@@ -156,17 +149,14 @@ export const RecordingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       webcamVideo.play();
       webcamVideoRef.current = webcamVideo;
       
-      // Start drawing both video sources onto the canvas
       const drawFrame = () => {
         if (!ctx || !canvas) return;
         
-        // Draw the screen capture to fill the entire canvas
         ctx.drawImage(screenVideo, 0, 0, canvas.width, canvas.height);
         
-        // Draw the webcam video in the corner (picture-in-picture)
-        const webcamWidth = canvas.width / 5; // 20% of canvas width
+        const webcamWidth = canvas.width / 5;
         const webcamHeight = (webcamWidth * webcamVideo.videoHeight) / webcamVideo.videoWidth;
-        const padding = 20; // Padding from corner
+        const padding = 20;
         
         ctx.drawImage(
           webcamVideo,
@@ -176,7 +166,6 @@ export const RecordingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           webcamHeight
         );
         
-        // Add a border around the webcam video
         ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 2;
         ctx.strokeRect(
@@ -191,10 +180,8 @@ export const RecordingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       
       drawFrame();
       
-      // Get a stream from the canvas
-      canvasStreamRef.current = canvas.captureStream(30); // 30 FPS
+      canvasStreamRef.current = canvas.captureStream(30);
       
-      // Add audio tracks from both sources to the canvas stream
       screenStream.getAudioTracks().forEach(track => {
         canvasStreamRef.current?.addTrack(track);
       });
@@ -211,25 +198,22 @@ export const RecordingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   
   const startRecording = async (): Promise<void> => {
     try {
-      // Get screen capture stream
+      setRecordedBlob(null);
+      
       const screenStream = await navigator.mediaDevices.getDisplayMedia({
         video: true,
         audio: true,
       });
       
-      // Get webcam stream
       const webcamStream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true,
       });
       
-      // Save webcam stream to state for preview
       setWebcamStream(webcamStream);
       
-      // Create a composite stream with both screen and webcam
       const compositeStream = setupCompositeCanvas(screenStream, webcamStream);
       
-      // Use the composite stream for recording, fallback to screen capture if something goes wrong
       streamRef.current = compositeStream || screenStream;
       
       const options = { mimeType: 'video/webm;codecs=vp9,opus' };
@@ -238,8 +222,6 @@ export const RecordingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       mediaRecorderRef.current = mediaRecorder;
       chunksRef.current = [];
       
-      // Reset state
-      setRecordedBlob(null);
       setRecordingDuration(0);
       pausedDurationRef.current = 0;
       
@@ -256,7 +238,6 @@ export const RecordingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         setRecordedBlob(blob);
         setIsRecording(false);
         
-        // Stop all tracks
         streamRef.current?.getTracks().forEach(track => track.stop());
         streamRef.current = null;
         
@@ -270,20 +251,17 @@ export const RecordingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           canvasStreamRef.current = null;
         }
         
-        // Clear timer
         if (timerRef.current) {
           clearInterval(timerRef.current);
           timerRef.current = null;
         }
       };
       
-      // Start recording
       mediaRecorder.start(100);
       setIsRecording(true);
       setIsPaused(false);
       startTimer();
       
-      // Handle screen share cancellation
       screenStream.getVideoTracks()[0].onended = () => {
         stopRecording();
       };
@@ -327,7 +305,6 @@ export const RecordingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     setIsPaused(false);
     pausedDurationRef.current = 0;
     
-    // Stop webcam if it's still running
     if (webcamStream) {
       webcamStream.getTracks().forEach(track => track.stop());
       setWebcamStream(null);
