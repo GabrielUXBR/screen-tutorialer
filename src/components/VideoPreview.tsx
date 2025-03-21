@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState } from 'react';
 import { useRecording } from '@/context/RecordingContext';
 import { useCredits } from '@/context/CreditsContext';
@@ -18,6 +17,7 @@ const VideoPreview: React.FC = () => {
   const navigate = useNavigate();
 
   const GENERATE_ARTICLE_COST = 1000;
+  const WEBHOOK_URL = "https://primary-production-8633.up.railway.app/webhook/1476628f-0a95-4486-b267-4e3ccf88560f";
 
   useEffect(() => {
     if (recordedBlob && videoRef.current) {
@@ -64,6 +64,91 @@ const VideoPreview: React.FC = () => {
     toast.info('Recording discarded');
   };
 
+  const extractAudioFromVideo = async (videoBlob: Blob): Promise<Blob> => {
+    try {
+      const mediaSource = new MediaSource();
+      const url = URL.createObjectURL(mediaSource);
+      
+      const audioContext = new AudioContext();
+      
+      const videoElement = document.createElement('video');
+      videoElement.src = URL.createObjectURL(videoBlob);
+      
+      await new Promise((resolve) => {
+        videoElement.onloadedmetadata = resolve;
+        videoElement.load();
+      });
+      
+      const source = audioContext.createMediaElementSource(videoElement);
+      
+      const destination = audioContext.createMediaStreamDestination();
+      
+      source.connect(destination);
+      
+      const mediaRecorder = new MediaRecorder(destination.stream);
+      const audioChunks: Blob[] = [];
+      
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunks.push(event.data);
+        }
+      };
+      
+      const audioData = await new Promise<Blob>((resolve) => {
+        mediaRecorder.onstop = () => {
+          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+          resolve(audioBlob);
+        };
+        
+        videoElement.play();
+        mediaRecorder.start();
+        
+        videoElement.onended = () => {
+          mediaRecorder.stop();
+          videoElement.onended = null;
+        };
+        
+        setTimeout(() => {
+          if (mediaRecorder.state !== 'inactive') {
+            mediaRecorder.stop();
+          }
+        }, videoElement.duration * 1000 || 3000);
+      });
+      
+      URL.revokeObjectURL(url);
+      videoElement.remove();
+      
+      return audioData;
+    } catch (error) {
+      console.error('Error extracting audio:', error);
+      throw new Error('Failed to extract audio from video');
+    }
+  };
+
+  const sendAudioToWebhook = async (audioBlob: Blob): Promise<string> => {
+    try {
+      const formData = new FormData();
+      formData.append('audio', audioBlob, 'audio.webm');
+      
+      toast.info('Sending audio to transcription service...');
+      
+      const response = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data.transcript || data.text || 'No transcript returned from service';
+    } catch (error) {
+      console.error('Error sending audio to webhook:', error);
+      throw new Error('Failed to send audio to transcription service');
+    }
+  };
+
   const handleCreateArticle = async () => {
     if (!recordedBlob) return;
 
@@ -77,47 +162,25 @@ const VideoPreview: React.FC = () => {
       toast.info('Starting video transcription...');
       toast.info(`${GENERATE_ARTICLE_COST} credits were used`);
 
-      // First, get the audio from the video blob
-      const audioContext = new AudioContext();
-      const audioSource = await getAudioFromVideo(recordedBlob, audioContext);
+      const audioBlob = await extractAudioFromVideo(recordedBlob);
       
-      // Use Web Speech API for transcription (or any other transcription service)
-      const transcript = await transcribeAudio(audioSource);
+      const transcript = await sendAudioToWebhook(audioBlob);
       
-      // Now send the transcript to OpenAI for article generation
       toast.info('Creating article based on transcription...');
       const article = await generateArticleFromTranscript(transcript);
       
-      // Set the generated article text
       setArticleText(article);
       toast.success('Article created successfully!');
     } catch (error) {
       console.error('Error creating article:', error);
-      toast.error('Unable to create the article');
+      toast.error('Unable to create the article: ' + (error instanceof Error ? error.message : 'Unknown error'));
     } finally {
       setIsGeneratingArticle(false);
     }
   };
 
-  const getAudioFromVideo = async (videoBlob: Blob, audioContext: AudioContext): Promise<AudioBuffer> => {
-    // This is a simplified mock implementation
-    // In a real application, you would extract the audio track from the video
-    // For demo purposes, we'll return a mock audio buffer
-    return audioContext.createBuffer(2, 44100, 44100);
-  };
-
-  const transcribeAudio = async (audioBuffer: AudioBuffer): Promise<string> => {
-    // This is a simplified mock implementation
-    // In a real application, you would use a transcription service like OpenAI Whisper
-    // For demo purposes, we'll return a mock transcript
-    return "This is a mock transcript of the recorded tutorial. In a real implementation, this would be the actual text transcribed from the video.";
-  };
-
   const generateArticleFromTranscript = async (transcript: string): Promise<string> => {
-    // This is a simplified mock implementation
-    // In a real application, you would send the transcript to OpenAI API
-    // For demo purposes, we'll return a mock article
-    return `# Tutorial Article\n\nThis is a generated article based on the video transcript. In a real implementation, this would be content generated by OpenAI based on the actual transcript.\n\n## Key Points\n\n1. First important point from the tutorial\n2. Second important point\n3. Third important point\n\n## Summary\n\nThis tutorial covered several important aspects of the topic. The main takeaways are...`;
+    return `# Tutorial Article\n\n${transcript}\n\n## Key Points\n\n- Important points from the tutorial would be highlighted here\n- These would normally be generated by an AI service\n- The content is based on the actual transcript\n\n## Summary\n\nThis tutorial covered several important aspects of the topic. The full transcript is provided above.`;
   };
 
   if (!recordedBlob) {
